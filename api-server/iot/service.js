@@ -1,4 +1,5 @@
 const { dispatch, spawn, query } = require("nact");
+const merge = require("deepmerge");
 const { system } = require("../system");
 const { initDevice, connectDevice } = require("./tuya");
 
@@ -9,43 +10,51 @@ const updateState = (actor, data) => {
 const delay = (duration) =>
   new Promise((resolve) => setTimeout(() => resolve(), duration));
 
-const reset = async (msg, error, ctx) => {
-  await delay(Math.random() * 500 - 750);
+const onCrash = async (msg, error, ctx) => {
+  console.log("IOT service crashed, restarting...");
+  await delay(Math.random() * 1000 + 500);
   return ctx.reset;
 };
 
-const initState = (ctx) => {
-  const device = initDevice();
-
-  device.on("data", (data) => updateState(ctx.self, data));
-  device.on("dp-refresh", (data) => updateState(ctx.self, data));
-  device.on("disconnected", () => {
-    dispatch(ctx.self, { type: "reset" });
-  });
-
-  // Let's not wait for connection - just initialize it.
-  connectDevice(device);
-
-  return { device: device.device.id };
+const initialStateFunc = (ctx) => {
+  dispatch(ctx.self, { type: "initialize" });
+  return { initialized: false };
 };
 
 const iotService = spawn(
   system,
   async (state, msg, ctx) => {
     switch (msg.type) {
+      case "initialize":
+        const device = initDevice();
+
+        device.on("data", (data) => updateState(ctx.self, data));
+        device.on("dp-refresh", (data) => updateState(ctx.self, data));
+        device.on("disconnected", () => {
+          dispatch(ctx.self, { type: "reset" });
+        });
+
+        console.log("Initializing connection...");
+        await connectDevice(device);
+
+        state.initialized = true;
+
+        break;
       case "updateState":
-        state.lastData = msg.payload;
-        return state;
+        state.rawData = merge(state.rawData, msg.payload);
+        break;
       case "getState":
         dispatch(ctx.sender, { payload: state, type: "SUCCESS" });
-        return state;
+        break;
       case "reset":
         this.reset();
-        return state;
+        break;
     }
+
+    return state;
   },
   "iot",
-  { onCrash: reset, initialStateFunc: initState }
+  { onCrash, initialStateFunc }
 );
 
 exports.iotService = iotService;
