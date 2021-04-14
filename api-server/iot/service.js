@@ -14,18 +14,19 @@ const reset = async (msg, error, ctx) => {
   return ctx.reset;
 };
 
-const initState = async (ctx) => {
+const initState = (ctx) => {
   const device = initDevice();
 
   device.on("data", (data) => updateState(ctx.self, data));
   device.on("dp-refresh", (data) => updateState(ctx.self, data));
   device.on("disconnected", () => {
-    dispatch(iotService, { type: "reset" });
+    dispatch(ctx.self, { type: "reset" });
   });
 
-  await connectDevice(device);
+  // Let's not wait for connection - just initialize it.
+  connectDevice(device);
 
-  return {};
+  return { device: device.device.id };
 };
 
 const iotService = spawn(
@@ -49,4 +50,4 @@ const iotService = spawn(
 
 exports.iotService = iotService;
 
-exports.getState = () => query(iotService, () => ({ type: "getState" }), 250);
+exports.getState = () => query(iotService, () => ({ type: "getState" }), 10000);
