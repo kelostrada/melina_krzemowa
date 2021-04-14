@@ -56,9 +56,14 @@ export const ManageIotComponent = () => {
 
   const callApi = async () => {
     try {
+      setState({
+        ...state,
+        showResult: false,
+      });
+
       const token = await getAccessTokenSilently();
 
-      const response = await fetch(`${apiOrigin}/api/external`, {
+      const response = await fetch(`${apiOrigin}/api/manage/status`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

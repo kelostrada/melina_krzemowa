@@ -27,12 +27,14 @@
     "highlight.js": "^10.0.3",
     "jwks-rsa": "^1.4.0",
     "morgan": "^1.9.1",
+    "nact": "^7.6.0",
     "npm-run-all": "^4.1.5",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^3.4.0",
-    "reactstrap": "^8.0.0"
+    "reactstrap": "^8.0.0",
+    "tuyapi": "^7.1.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.10.1",

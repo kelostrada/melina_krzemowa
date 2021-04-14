@@ -1750,6 +1750,11 @@
   "resolved" "https://registry.npmjs.org/@types/range-parser/-/range-parser-1.2.3.tgz"
   "version" "1.2.3"
 
+"@types/retry@^0.12.0":
+  "integrity" "sha512-wWKOClTTiizcZhXnPY4wikVAwmdYHp8q6DmC+EJUzAMsycb7HB32Kh9RN4+0gExjmPmZSAQjgURXIGATPegAvA=="
+  "resolved" "https://registry.npmjs.org/@types/retry/-/retry-0.12.0.tgz"
+  "version" "0.12.0"
+
 "@types/serve-static@*":
   "integrity" "sha512-ZFqF6qa48XsPdjXV5Gsz0Zqmux2PerNd3a/ktL45mHpa19cuMi/cL8tcxdAx497yRh+QtYPuofjT9oWw9P7nkA=="
   "resolved" "https://registry.npmjs.org/@types/serve-static/-/serve-static-1.13.9.tgz"
@@ -4014,6 +4019,13 @@
   dependencies:
     "ms" "2.0.0"
 
+"debug@4.1.1":
+  "integrity" "sha512-pYAIzeRo8J6KPEaJ0VWOh5Pzkbw/RetuzehGM7QRRX5he4fPHx2rdKMB256ehJCkX+XRQm16eZLqLNS8RSZXZw=="
+  "resolved" "https://registry.npmjs.org/debug/-/debug-4.1.1.tgz"
+  "version" "4.1.1"
+  dependencies:
+    "ms" "^2.1.1"
+
 "decamelize@^1.2.0":
   "integrity" "sha1-9lNNFRSCabIDUue+4m9QH5oZEpA="
   "resolved" "https://registry.npmjs.org/decamelize/-/decamelize-1.2.0.tgz"
@@ -4117,6 +4129,11 @@
   "integrity" "sha1-3zrhmayt+31ECqrgsp4icrJOxhk="
   "resolved" "https://registry.npmjs.org/delayed-stream/-/delayed-stream-1.0.0.tgz"
   "version" "1.0.0"
+
+"denque@^1.2.3":
+  "integrity" "sha512-CYiCSgIF1p6EUByQPlGkKnP1M9g0ZV3qMIrqMqZqdwazygIA/YP2vrbcyl1h/WppKJTdl1F85cXIle+394iDAQ=="
+  "resolved" "https://registry.npmjs.org/denque/-/denque-1.5.0.tgz"
+  "version" "1.5.0"
 
 "depd@~1.1.2":
   "integrity" "sha1-m81S4UwJd2PnSbJ0xDRu0uVgtak="
@@ -4803,7 +4820,7 @@
   "resolved" "https://registry.npmjs.org/etag/-/etag-1.8.1.tgz"
   "version" "1.8.1"
 
-"eventemitter3@^4.0.0":
+"eventemitter3@^4.0.0", "eventemitter3@^4.0.4":
   "integrity" "sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw=="
   "resolved" "https://registry.npmjs.org/eventemitter3/-/eventemitter3-4.0.7.tgz"
   "version" "4.0.7"
@@ -8067,6 +8084,13 @@
   "resolved" "https://registry.npmjs.org/mute-stream/-/mute-stream-0.0.8.tgz"
   "version" "0.0.8"
 
+"nact@^7.6.0":
+  "integrity" "sha512-0UghRQyNUMWLSwPIi7cyp3MXUtMpZLRaSG3bjqEfWO9OxZoUIAMh59raKeoTfnZ33B50CLg3RefXHLQr3kvgmQ=="
+  "resolved" "https://registry.npmjs.org/nact/-/nact-7.6.0.tgz"
+  "version" "7.6.0"
+  dependencies:
+    "denque" "^1.2.3"
+
 "nan@^2.12.1":
   "integrity" "sha512-M2ufzIiINKCuDfBSAUr1vWQ+vuVcA9kqx8JJUsbQi6yf1uGRyb7HfpdfUr5qLXf3B/t8dPvcjhKMmlfnP47EzQ=="
   "resolved" "https://registry.npmjs.org/nan/-/nan-2.14.2.tgz"
@@ -8582,6 +8606,14 @@
   dependencies:
     "aggregate-error" "^3.0.0"
 
+"p-queue@6.6.1":
+  "integrity" "sha512-miQiSxLYPYBxGkrldecZC18OTLjdUqnlRebGzPRiVxB8mco7usCmm7hFuxiTvp93K18JnLtE4KMMycjAu/cQQg=="
+  "resolved" "https://registry.npmjs.org/p-queue/-/p-queue-6.6.1.tgz"
+  "version" "6.6.1"
+  dependencies:
+    "eventemitter3" "^4.0.4"
+    "p-timeout" "^3.1.0"
+
 "p-reduce@^1.0.0":
   "integrity" "sha1-GMKw3ZNqRpClKfgjH1ig/bakffo="
   "resolved" "https://registry.npmjs.org/p-reduce/-/p-reduce-1.0.0.tgz"
@@ -8593,6 +8625,21 @@
   "version" "3.0.1"
   dependencies:
     "retry" "^0.12.0"
+
+"p-retry@4.2.0":
+  "integrity" "sha512-jPH38/MRh263KKcq0wBNOGFJbm+U6784RilTmHjB/HM9kH9V8WlCpVUcdOmip9cjXOh6MxZ5yk1z2SjDUJfWmA=="
+  "resolved" "https://registry.npmjs.org/p-retry/-/p-retry-4.2.0.tgz"
+  "version" "4.2.0"
+  dependencies:
+    "@types/retry" "^0.12.0"
+    "retry" "^0.12.0"
+
+"p-timeout@^3.1.0", "p-timeout@3.2.0":
+  "integrity" "sha512-rhIwUycgwwKcP9yTOOFK/AKsAopjjCakVqLHePO3CC6Mir1Z99xT+R63jZxAT5lFZLa2inS5h+ZS2GvR99/FBg=="
+  "resolved" "https://registry.npmjs.org/p-timeout/-/p-timeout-3.2.0.tgz"
+  "version" "3.2.0"
+  dependencies:
+    "p-finally" "^1.0.0"
 
 "p-try@^1.0.0":
   "integrity" "sha1-y8ec26+P1CKOE/Yh8rGiN8GyB7M="
@@ -11764,6 +11811,16 @@
   "version" "0.6.0"
   dependencies:
     "safe-buffer" "^5.0.1"
+
+"tuyapi@^7.1.0":
+  "integrity" "sha512-lQ+gFFcri34tRFpHyMNAqe7D1czuGWOuPEq6vac2jxXQTUYzCcKZ2pkY0Qp/5IlhGjoS31BFr/BOKtA49ITSFA=="
+  "resolved" "https://registry.npmjs.org/tuyapi/-/tuyapi-7.1.0.tgz"
+  "version" "7.1.0"
+  dependencies:
+    "debug" "4.1.1"
+    "p-queue" "6.6.1"
+    "p-retry" "4.2.0"
+    "p-timeout" "3.2.0"
 
 "tweetnacl@^0.14.3", "tweetnacl@~0.14.0":
   "integrity" "sha1-WuaBd/GS1EViadEIr6k/+HQ/T2Q="
