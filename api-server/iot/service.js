@@ -2,13 +2,15 @@ const { dispatch, spawn, query } = require("nact");
 const merge = require("deepmerge");
 const { system } = require("../system");
 const { initDevice, connectDevice } = require("./tuya");
+const { delay } = require("../utils/delay");
 
-const updateState = (actor, data) => {
+const onData = (actor, data) => {
   dispatch(actor, { type: "updateState", payload: data });
 };
 
-const delay = (duration) =>
-  new Promise((resolve) => setTimeout(() => resolve(), duration));
+const onDisconnected = (actor) => {
+  dispatch(actor, { type: "reset" });
+};
 
 const onCrash = async (msg, error, ctx) => {
   console.log("IOT service crashed, restarting...");
@@ -21,33 +23,46 @@ const initialStateFunc = (ctx) => {
   return { initialized: false };
 };
 
+const initialize = async (state, ctx) => {
+  const device = initDevice();
+
+  device.on("data", (data) => onData(ctx.self, data));
+  device.on("dp-refresh", (data) => onData(ctx.self, data));
+  device.on("disconnected", () => onDisconnected(ctx.self));
+
+  console.log("Initializing connection...");
+  await connectDevice(device);
+
+  state.initialized = true;
+};
+
+const updateState = (state, data) => {
+  state.rawData = merge(state.rawData, data);
+};
+
+const getState = (state, ctx) => {
+  dispatch(ctx.sender, { payload: state, type: "SUCCESS" });
+};
+
+const reset = (service) => {
+  service.reset();
+};
+
 const iotService = spawn(
   system,
   async (state, msg, ctx) => {
     switch (msg.type) {
       case "initialize":
-        const device = initDevice();
-
-        device.on("data", (data) => updateState(ctx.self, data));
-        device.on("dp-refresh", (data) => updateState(ctx.self, data));
-        device.on("disconnected", () => {
-          dispatch(ctx.self, { type: "reset" });
-        });
-
-        console.log("Initializing connection...");
-        await connectDevice(device);
-
-        state.initialized = true;
-
+        initialize(state, ctx);
         break;
       case "updateState":
-        state.rawData = merge(state.rawData, msg.payload);
+        updateState(state, msg.payload);
         break;
       case "getState":
-        dispatch(ctx.sender, { payload: state, type: "SUCCESS" });
+        getState(state, ctx);
         break;
       case "reset":
-        this.reset();
+        reset(this);
         break;
     }
 
