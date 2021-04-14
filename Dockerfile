@@ -30,8 +30,8 @@ COPY --from=build /app/package.json .
 RUN yarn install --production
 
 COPY --from=build /app/build ./build
-COPY --from=build /app/config/devices_config.json ./config/devices_config.json
-COPY --from=build /app/config/auth_config.json ./config/auth_config.json
+COPY --from=build /app/src/config/devices.json ./src/config/devices.json
+COPY --from=build /app/src/config/auth.json ./src/config/auth.json
 COPY --from=build /app/server.js .
 COPY --from=build /app/api-server.js .
 

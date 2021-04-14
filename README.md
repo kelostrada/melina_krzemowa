@@ -30,7 +30,7 @@ If you do not wish to use an API or observe the API call working, you should not
 
 The project needs to be configured with your Auth0 domain and client ID in order for the authentication flow to work.
 
-To do this, first copy `config/auth_config.json.example` into a new file in the same folder called `config/auth_config.json`, and replace the values with your own Auth0 application credentials, and optionally the base URLs of your application and API:
+To do this, first copy `src/config/auth.json.example` into a new file in the same folder called `src/config/auth.json`, and replace the values with your own Auth0 application credentials, and optionally the base URLs of your application and API:
 
 ```json
 {

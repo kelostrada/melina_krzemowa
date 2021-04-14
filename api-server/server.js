@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
 const helmet = require("helmet");
-const authConfig = require("../config/auth_config.json");
+const authConfig = require("../src/config/auth.json");
 const { addRoutes } = require("./router");
 
 const port = process.env.API_PORT || 3001;

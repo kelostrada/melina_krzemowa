@@ -1,5 +1,5 @@
 const TuyAPI = require("tuyapi");
-const devicesConfig = require("../../config/devices_config.json");
+const devicesConfig = require("../../src/config/devices.json");
 
 exports.initDevice = () => {
   const device = new TuyAPI({

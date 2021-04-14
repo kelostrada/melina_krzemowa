@@ -1,7 +1,7 @@
 require("./api-server/application");
 const { startServer } = require("./api-server/server");
 
-const authConfig = require("./config/auth_config.json");
+const authConfig = require("./src/config/auth.json");
 
 if (
   !authConfig.domain ||
@@ -9,7 +9,7 @@ if (
   authConfig.audience === "YOUR_API_IDENTIFIER"
 ) {
   console.log(
-    "Exiting: Please make sure that auth_config.json is in place and populated with valid domain and audience values"
+    "Exiting: Please make sure that src/config/auth.json is in place and populated with valid domain and audience values"
   );
 
   process.exit();

@@ -22,5 +22,5 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-auth_config.json
-devices_config.json
+src/config/auth.json
+src/config/devices.json
