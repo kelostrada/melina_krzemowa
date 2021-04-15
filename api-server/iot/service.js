@@ -8,6 +8,10 @@ const onData = (actor, data) => {
   dispatch(actor, { type: "updateState", payload: data });
 };
 
+const onConnected = (state) => {
+  state.connected = true;
+};
+
 const onDisconnected = (actor) => {
   dispatch(actor, { type: "reset" });
 };
@@ -20,7 +24,7 @@ const onCrash = async (msg, error, ctx) => {
 
 const initialStateFunc = (ctx) => {
   dispatch(ctx.self, { type: "initialize" });
-  return { initialized: false };
+  return { connected: false };
 };
 
 const initialize = async (state, ctx) => {
@@ -28,12 +32,16 @@ const initialize = async (state, ctx) => {
 
   device.on("data", (data) => onData(ctx.self, data));
   device.on("dp-refresh", (data) => onData(ctx.self, data));
+  device.on("connected", () => onConnected(state));
   device.on("disconnected", () => onDisconnected(ctx.self));
 
-  console.log("Initializing connection...");
-  await connectDevice(device);
-
-  state.initialized = true;
+  try {
+    console.log("Initializing connection...");
+    await connectDevice(device);
+  } catch (error) {
+    console.log(`Caught error while connecting: ${error.message}`);
+    onDisconnected(ctx.self);
+  }
 };
 
 const updateState = (state, data) => {
