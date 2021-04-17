@@ -172,7 +172,7 @@ export const ManageIotComponent = () => {
         </Button>
       </div>
       {state.showResult && (
-        <div className="device-status">
+        <div className="device-status" data-testid="api-result">
           <div>
             <p>Socket 1 - {state.apiMessage.payload.socket1.toString()}</p>
             <p>Socket 2 - {state.apiMessage.payload.socket2.toString()}</p>
