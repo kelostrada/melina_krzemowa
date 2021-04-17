@@ -1,8 +1,8 @@
 const { dispatch, spawn, query } = require("nact");
-const merge = require("deepmerge");
 const { system } = require("../system");
 const { initDevice, connectDevice } = require("./tuya");
 const { delay } = require("../utils/delay");
+const { Strip } = require("./strip");
 
 const onData = (actor, data) => {
   dispatch(actor, { type: "updateState", payload: data });
@@ -24,7 +24,7 @@ const onCrash = async (msg, error, ctx) => {
 
 const initialStateFunc = (ctx) => {
   dispatch(ctx.self, { type: "initialize" });
-  return { connected: false };
+  return new Strip();
 };
 
 const initialize = async (state, ctx) => {
@@ -45,7 +45,7 @@ const initialize = async (state, ctx) => {
 };
 
 const updateState = (state, data) => {
-  state.rawData = merge(state.rawData, data);
+  state.updateData(data);
 };
 
 const getState = (state, ctx) => {
