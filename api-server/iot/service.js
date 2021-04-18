@@ -17,7 +17,7 @@ const onDisconnected = (actor) => {
 };
 
 const onCrash = async (msg, error, ctx) => {
-  console.log("IOT service crashed, restarting...");
+  console.log(`IOT service crashed, restarting... ${error}`);
   await delay(Math.random() * 1000 + 500);
   return ctx.reset;
 };

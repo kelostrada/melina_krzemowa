@@ -1,5 +1,15 @@
 const merge = require("deepmerge");
 
+const PINS = {
+  socket1: "1",
+  socket2: "2",
+  socket3: "3",
+  socketUSB: "7",
+  currentElectricity: "18",
+  currentPower: "19",
+  currentVoltage: "20",
+};
+
 class Strip {
   id = "";
   connected = false;
@@ -21,13 +31,17 @@ class Strip {
 
   fillFields() {
     this.id = this.rawData.devId;
-    this.socket1 = this.rawData.dps["1"];
-    this.socket2 = this.rawData.dps["2"];
-    this.socket3 = this.rawData.dps["3"];
-    this.socketUSB = this.rawData.dps["7"];
-    this.currentElectricity = this.rawData.dps["18"];
-    this.currentPower = this.rawData.dps["19"] / 10.0;
-    this.currentVoltage = this.rawData.dps["20"] / 10.0;
+    this.socket1 = this.getPinValue("socket1");
+    this.socket2 = this.getPinValue("socket2");
+    this.socket3 = this.getPinValue("socket3");
+    this.socketUSB = this.getPinValue("socketUSB");
+    this.currentElectricity = this.getPinValue("currentElectricity");
+    this.currentPower = this.getPinValue("currentPower") / 10.0;
+    this.currentVoltage = this.getPinValue("currentVoltage") / 10.0;
+  }
+
+  getPinValue(name) {
+    return this.rawData.dps[PINS[name]];
   }
 }
 
