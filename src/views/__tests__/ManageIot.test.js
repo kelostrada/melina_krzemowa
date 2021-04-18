@@ -31,15 +31,37 @@ describe("The ManageIot component", () => {
   });
 
   it("makes a call to the API when the button is clicked", async () => {
-    fetch.mockResponseOnce(JSON.stringify({ msg: "This is the API result" }));
+    fetch.mockResponseOnce(
+      JSON.stringify({
+        payload: {
+          socket1: true,
+          socket2: true,
+          socket3: true,
+          socketUSB: true,
+          currentElectricity: 100,
+          currentPower: 10.1,
+          currentVoltage: 235.5,
+        },
+      })
+    );
 
     render(<ManageIotComponent />);
-    fireEvent.click(screen.getByText("Fetch Status"));
+    fireEvent.click(screen.getByText("Refresh"));
 
     await waitFor(() => screen.getByTestId("api-result"));
 
+    expect(await screen.findByText(/Socket 1 - true/)).toBeInTheDocument();
+    expect(await screen.findByText(/Socket 2 - true/)).toBeInTheDocument();
+    expect(await screen.findByText(/Socket 3 - true/)).toBeInTheDocument();
+    expect(await screen.findByText(/Socket USB - true/)).toBeInTheDocument();
     expect(
-      await screen.findByText(/This is the API result/)
+      await screen.findByText(/Current Electricity - 100mA/)
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByText(/Current Power - 10.1W/)
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByText(/Current Voltage - 235.5V/)
     ).toBeInTheDocument();
   });
 

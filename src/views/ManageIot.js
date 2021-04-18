@@ -91,7 +91,7 @@ export const ManageIotComponent = () => {
 
   return (
     <>
-      <div className="mb-5">
+      <div>
         {state.error === "consent_required" && (
           <Alert color="warning">
             You need to{" "}
@@ -167,17 +167,33 @@ export const ManageIotComponent = () => {
         <h1>Manage IOT</h1>
         <p className="lead">Manage devices in Melina Krzemowa.</p>
 
-        <Button
-          color="primary"
-          className="mt-5"
-          onClick={callApi}
-          disabled={!audience}
-        >
-          Fetch Status
+        <Button color="primary" onClick={callApi} disabled={!audience}>
+          Refresh
         </Button>
       </div>
-
-      <div className="result-block-container">
+      {state.showResult && (
+        <div className="device-status" data-testid="api-result">
+          <div>
+            <p>Socket 1 - {state.apiMessage.payload.socket1.toString()}</p>
+            <p>Socket 2 - {state.apiMessage.payload.socket2.toString()}</p>
+            <p>Socket 3 - {state.apiMessage.payload.socket3.toString()}</p>
+            <p>Socket USB - {state.apiMessage.payload.socketUSB.toString()}</p>
+            <p>
+              Current Electricity -{" "}
+              {state.apiMessage.payload.currentElectricity.toString()}mA
+            </p>
+            <p>
+              Current Power - {state.apiMessage.payload.currentPower.toString()}
+              W
+            </p>
+            <p>
+              Current Voltage -{" "}
+              {state.apiMessage.payload.currentVoltage.toString()}V
+            </p>
+          </div>
+        </div>
+      )}
+      {/* <div className="result-block-container">
         {state.showResult && (
           <div className="result-block" data-testid="api-result">
             <h6 className="muted">Result</h6>
@@ -186,7 +202,7 @@ export const ManageIotComponent = () => {
             </Highlight>
           </div>
         )}
-      </div>
+      </div> */}
     </>
   );
 };
