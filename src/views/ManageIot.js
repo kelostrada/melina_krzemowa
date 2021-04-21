@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, Alert } from "reactstrap";
-import Highlight from "../components/Highlight";
+import ToggleButton from "../components/IOT/ToggleButton";
 import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
 import { getConfig } from "../config";
 import Loading from "../components/Loading";
@@ -9,8 +9,15 @@ export const ManageIotComponent = () => {
   const { apiOrigin = "http://localhost:3001", audience } = getConfig();
 
   const [state, setState] = useState({
-    showResult: false,
-    apiMessage: "",
+    strip: {
+      socket1: false,
+      socket2: false,
+      socket3: false,
+      socketUSB: false,
+      currentElectricity: 0,
+      currentPower: 0,
+      currentVoltage: 0,
+    },
     error: null,
   });
 
@@ -23,64 +30,36 @@ export const ManageIotComponent = () => {
   const handleConsent = async () => {
     try {
       await getAccessTokenWithPopup();
-      setState({
-        ...state,
-        error: null,
-      });
+      setState({ ...state, error: null });
     } catch (error) {
-      setState({
-        ...state,
-        error: error.error,
-      });
+      setState({ ...state, error: error.error });
     }
 
-    await callApi();
+    await fetchStrip();
   };
 
   const handleLoginAgain = async () => {
     try {
       await loginWithPopup();
-      setState({
-        ...state,
-        error: null,
-      });
+      setState({ ...state, error: null });
     } catch (error) {
-      setState({
-        ...state,
-        error: error.error,
-      });
+      setState({ ...state, error: error.error });
     }
 
-    await callApi();
+    await fetchStrip();
   };
 
-  const callApi = async () => {
+  const fetchStrip = async () => {
     try {
-      setState({
-        ...state,
-        showResult: false,
-      });
-
       const token = await getAccessTokenSilently();
 
-      const response = await fetch(`${apiOrigin}/api/manage/status`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
+      const options = { headers: { Authorization: `Bearer ${token}` } };
+      const response = await fetch(`${apiOrigin}/api/manage/status`, options);
       const responseData = await response.json();
 
-      setState({
-        ...state,
-        showResult: true,
-        apiMessage: responseData,
-      });
+      setState({ ...state, strip: responseData.payload });
     } catch (error) {
-      setState({
-        ...state,
-        error: error.error,
-      });
+      setState({ ...state, error: error.error });
     }
   };
 
@@ -167,42 +146,36 @@ export const ManageIotComponent = () => {
         <h1>Manage IOT</h1>
         <p className="lead">Manage devices in Melina Krzemowa.</p>
 
-        <Button color="primary" onClick={callApi} disabled={!audience}>
+        <Button color="primary" onClick={fetchStrip} disabled={!audience}>
           Refresh
         </Button>
       </div>
-      {state.showResult && (
-        <div className="device-status" data-testid="api-result">
-          <div>
-            <p>Socket 1 - {state.apiMessage.payload.socket1.toString()}</p>
-            <p>Socket 2 - {state.apiMessage.payload.socket2.toString()}</p>
-            <p>Socket 3 - {state.apiMessage.payload.socket3.toString()}</p>
-            <p>Socket USB - {state.apiMessage.payload.socketUSB.toString()}</p>
-            <p>
-              Current Electricity -{" "}
-              {state.apiMessage.payload.currentElectricity.toString()}mA
-            </p>
-            <p>
-              Current Power - {state.apiMessage.payload.currentPower.toString()}
-              W
-            </p>
-            <p>
-              Current Voltage -{" "}
-              {state.apiMessage.payload.currentVoltage.toString()}V
-            </p>
-          </div>
+
+      <div className="device-status" data-testid="api-result">
+        <div>
+          <p>
+            Socket 1 - {state.strip.socket1.toString()}
+            <ToggleButton name="socket1" value={state.strip.socket1} />
+          </p>
+          <p>
+            Socket 2 - {state.strip.socket2.toString()}
+            <ToggleButton name="socket2" value={state.strip.socket2} />
+          </p>
+          <p>
+            Socket 3 - {state.strip.socket3.toString()}
+            <ToggleButton name="socket3" value={state.strip.socket3} />
+          </p>
+          <p>
+            Socket USB - {state.strip.socketUSB.toString()}
+            <ToggleButton name="socketUSB" value={state.strip.socketUSB} />
+          </p>
+          <p>
+            Current Electricity - {state.strip.currentElectricity.toString()}mA
+          </p>
+          <p>Current Power - {state.strip.currentPower.toString()}W</p>
+          <p>Current Voltage - {state.strip.currentVoltage.toString()}V</p>
         </div>
-      )}
-      {/* <div className="result-block-container">
-        {state.showResult && (
-          <div className="result-block" data-testid="api-result">
-            <h6 className="muted">Result</h6>
-            <Highlight>
-              <span>{JSON.stringify(state.apiMessage, null, 2)}</span>
-            </Highlight>
-          </div>
-        )}
-      </div> */}
+      </div>
     </>
   );
 };

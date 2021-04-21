@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
 const helmet = require("helmet");
+
 const authConfig = require("../src/config/auth.json");
 const { addRoutes } = require("./router");
 
@@ -15,6 +16,9 @@ exports.startServer = () => {
   app.use(morgan("dev"));
   app.use(helmet());
   app.use(cors({ origin: appOrigin }));
+
+  // parse application/json
+  app.use(express.json());
 
   // TODO: implement rotuer as a middleware maybe?
   addRoutes(app);

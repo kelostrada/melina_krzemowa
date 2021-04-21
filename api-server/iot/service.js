@@ -17,7 +17,7 @@ const onDisconnected = (actor) => {
 };
 
 const onCrash = async (msg, error, ctx) => {
-  console.log("IOT service crashed, restarting...");
+  console.log(`IOT service crashed, restarting... ${error}`);
   await delay(Math.random() * 1000 + 500);
   return ctx.reset;
 };
@@ -38,6 +38,7 @@ const initialize = async (state, ctx) => {
   try {
     console.log("Initializing connection...");
     await connectDevice(device);
+    state.device = device;
   } catch (error) {
     console.log(`Caught error while connecting: ${error.message}`);
     onDisconnected(ctx.self);
@@ -48,12 +49,16 @@ const updateState = (state, data) => {
   state.updateData(data);
 };
 
+const setValue = async (state, data) => {
+  return await state.setValue(data.name, data.value);
+};
+
 const getState = (state, ctx) => {
   dispatch(ctx.sender, { payload: state, type: "SUCCESS" });
 };
 
-const reset = (service) => {
-  service.reset();
+const reset = () => {
+  throw new Error("Resetting service...");
 };
 
 const iotService = spawn(
@@ -69,8 +74,11 @@ const iotService = spawn(
       case "getState":
         getState(state, ctx);
         break;
+      case "setValue":
+        await setValue(state, msg.payload);
+        break;
       case "reset":
-        reset(this);
+        reset();
         break;
     }
 
@@ -83,3 +91,9 @@ const iotService = spawn(
 exports.iotService = iotService;
 
 exports.getState = () => query(iotService, () => ({ type: "getState" }), 10000);
+exports.setValue = (name, value) =>
+  query(
+    iotService,
+    () => ({ type: "setValue", payload: { name: name, value: value } }),
+    10000
+  );
