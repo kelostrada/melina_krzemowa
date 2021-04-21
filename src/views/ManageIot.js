@@ -19,7 +19,6 @@ export const ManageIotComponent = () => {
       currentVoltage: 0,
     },
     error: null,
-    temp: null,
   });
 
   const {
